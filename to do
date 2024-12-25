@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List</title>
+</head>
+<body>
+  <h1>To-Do List</h1>
+
+  <input type="text" id="taskInput" placeholder="Enter task">
+  <button onclick="addTask()">Add Task</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const task = taskInput.value;
+
+      if (task.trim() !== '') {
+        fetch('http://localhost:3000/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ task }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.text();
+            }
+            throw new Error('Error adding task');
+          })
+          .then((data) => {
+            alert(data);
+            taskInput.value = '';
+            // You might want to update the UI with the added task from the response
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      } else {
+        alert('Please enter a task!');
+      }
+    }
+  </script>
+
+</body>
+</html>
